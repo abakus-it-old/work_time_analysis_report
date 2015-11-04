@@ -1,0 +1,249 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <report 
+            string="Work time analysis Report" 
+            id="action_report_work_time_analysis" 
+            model="work.time.analysis" 
+            report_type="qweb-pdf"
+            name="work_time_analysis_report.report_work_time_analysis_document" 
+            file="work_time_analysis_report" 
+        />
+        
+        <record id="paperformat_default_with_landscape" model="report.paperformat">
+        <field name="name">Default with Landscape</field>
+           <field name="orientation">Landscape</field>
+        </record>
+
+        <record id="action_report_work_time_analysis" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="paperformat_default_with_landscape"/>
+        </record>
+
+        <template id="report_work_time_analysis_document">
+            <t t-name="work_time_analysis_report.report_work_time_analysis_document">
+                <t t-call="report.html_container">
+                    <t t-foreach="docs" t-as="o">
+                        <t t-call="report.external_layout">
+                            <div class="page">
+                                <h1>Work time analysis report <small> from <span t-esc="time.strftime('%d-%m-%Y',time.strptime(o.date_start,'%Y-%m-%d'))"/> to <span t-esc="time.strftime('%d-%m-%Y',time.strptime(o.date_stop,'%Y-%m-%d'))"/></small></h1>
+                                <div style="page-break-inside:avoid;">
+                                    <h2>Employee / Contracts / Working Time / Invoiceable Time</h2>
+                                    <p>Shows the time worked and time invoiced the by each employee group by contracts.<br/>
+                                    WT = Working Time, IT = Invoiceable Time. Times in hours.</p>
+                                    <table class="table table-condensed table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Account name</th>
+                                                <t t-foreach="data['form']['team-contract-time']['users']" t-as="username">
+                                                    <th class="text-center" colspan="2">
+                                                        <span t-esc="username"/>
+                                                    </th>
+                                                </t>
+                                                <th class="text-center" colspan="2">Total</th>
+                                            </tr>
+                                            <tr>
+                                                <th></th>
+                                                <t t-foreach="data['form']['team-contract-time']['users']" t-as="username">
+                                                    <th class="text-center">WT</th>
+                                                    <th class="text-center">IT</th>
+                                                </t>
+                                                <th class="text-center">WT</th>
+                                                <th class="text-center">IT</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-set="stylecontent">font-weight: bold;</t>
+                                            <tr t-foreach="data['form']['team-contract-time']['accounts']" t-as="account">
+                                                <td><span t-esc="account['name']"/></td>
+                                                <t t-set="iterator" t-value="0"/>
+                                                <t t-set="previous_val" t-value="0"/>
+                                                <td class="text-right" t-foreach="account['values']" t-as="val">
+                                                    <t t-if="iterator==0 and val&gt;0">
+                                                        <span t-esc="o.decimal_to_hours(val)"/>
+                                                    </t>
+
+                                                    <t t-if="iterator==1 and previous_val==val and val&gt;0">
+                                                        <span t-esc="o.decimal_to_hours(val)"/>
+                                                    </t>
+
+                                                    <t t-if="iterator==1 and previous_val!=val">
+                                                        <span t-att="{ 'style' : stylecontent }" t-esc="o.decimal_to_hours(val)"/>
+                                                    </t>
+
+                                                    <t t-set="previous_val" t-value="val"/>
+                                                    <t t-set="iteratorTmp" t-value="iterator"/>
+                                                    <t t-if="iteratorTmp==0"><t t-set="iterator" t-value="1"/></t>
+                                                    <t t-if="iteratorTmp==1"><t t-set="iterator" t-value="0"/></t>
+                                                </td>
+                                            </tr>
+                                            <tr> 
+                                                <td class="text-right">Total</td>
+                                                <t t-set="iterator" t-value="0"/>
+                                                <t t-set="previous_val" t-value="0"/>
+                                                <td class="text-right" t-foreach="data['form']['team-contract-time']['users_total']" t-as="val">
+                                                    <span t-esc="o.decimal_to_hours(val)"/>
+                                                    <t t-if="iterator==1 and previous_val&gt;0">
+                                                         (<span t-esc="int(((float(val)/float(previous_val)*100.0)))"/> %)
+                                                    </t>
+                                                    <t t-set="previous_val" t-value="val"/>
+                                                    <t t-set="iteratorTmp" t-value="iterator"/>
+                                                    <t t-if="iteratorTmp==0"><t t-set="iterator" t-value="1"/></t>
+                                                    <t t-if="iteratorTmp==1"><t t-set="iterator" t-value="0"/></t>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="page-break-inside:avoid;">
+                                    <h2>Employee / Projects / Closed Tasks / Times</h2>
+                                    <p>Shows the time worked by each employee on closed tasks for the given projects compared to the planned time.<br/>
+                                    WT = Working Time, PT = Planned Time. Times in hours.</p>
+                                    <table class="table table-condensed table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Project name</th>
+                                                <t t-foreach="data['form']['team-task-project-time']['users']" t-as="username">
+                                                    <th class="text-center" colspan="2">
+                                                        <span t-esc="username"/>
+                                                    </th>
+                                                </t>
+                                                <th class="text-center" colspan="2">Total</th>
+                                            </tr>
+                                            <tr>
+                                                <th></th>
+                                                <t t-foreach="data['form']['team-task-project-time']['users']" t-as="username">
+                                                    <th class="text-center">PT</th>
+                                                    <th class="text-center">WT</th>
+                                                </t>
+                                                <th class="text-center">PT</th>
+                                                <th class="text-center">WT</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-set="stylecontentgreen">color: green;</t>
+                                            <t t-set="stylecontentred">font-weight: bold; color: red;</t>
+                                            <tr t-foreach="data['form']['team-task-project-time']['projects']" t-as="project">
+                                                <td><span t-esc="project['name']"/></td>
+                                                <t t-set="iterator" t-value="0"/>
+                                                <t t-set="previous_val" t-value="0"/>
+                                                <td class="text-right" t-foreach="project['values']" t-as="val">
+                                                    <t t-if="iterator==0 and val&gt;0">
+                                                        <span t-esc="o.decimal_to_hours(val)"/>
+                                                    </t>
+
+                                                    <t t-if="iterator==1 and previous_val&lt;val">
+                                                        <span t-att="{ 'style' : stylecontentred }" t-esc="o.decimal_to_hours(val)"/>
+                                                    </t>
+
+                                                    <t t-if="iterator==1 and previous_val&gt;=val and val&gt;0">
+                                                        <span t-att="{ 'style' : stylecontentgreen }" t-esc="o.decimal_to_hours(val)"/>
+                                                    </t>
+
+                                                    <t t-set="previous_val" t-value="val"/>
+                                                    <t t-set="iteratorTmp" t-value="iterator"/>
+                                                    <t t-if="iteratorTmp==0"><t t-set="iterator" t-value="1"/></t>
+                                                    <t t-if="iteratorTmp==1"><t t-set="iterator" t-value="0"/></t>
+                                                </td>
+                                            </tr>
+                                            <tr> 
+                                                <td class="text-right">Total</td>
+                                                <t t-set="iterator" t-value="0"/>
+                                                <t t-set="previous_val" t-value="0"/>
+                                                <td class="text-right" t-foreach="data['form']['team-task-project-time']['users_total']" t-as="val">
+                                                    <t t-if="iterator==0 and val&gt;0">
+                                                        <span t-esc="o.decimal_to_hours(val)"/>
+                                                    </t>
+
+                                                    <t t-if="iterator==1 and previous_val&lt;val">
+                                                        <span t-att="{ 'style' : stylecontentred }" t-esc="o.decimal_to_hours(val)"/>
+                                                    </t>
+
+                                                    <t t-if="iterator==1 and previous_val&gt;=val and val&gt;0">
+                                                        <span t-att="{ 'style' : stylecontentgreen }" t-esc="o.decimal_to_hours(val)"/>
+                                                    </t>
+                                                    <t t-if="iterator==1 and previous_val&gt;0">
+                                                         (<span t-esc="int(((float(val)/float(previous_val)*100.0)))"/> %)
+                                                    </t>
+
+                                                    <t t-set="previous_val" t-value="val"/>
+                                                    <t t-set="iteratorTmp" t-value="iterator"/>
+                                                    <t t-if="iteratorTmp==0"><t t-set="iterator" t-value="1"/></t>
+                                                    <t t-if="iteratorTmp==1"><t t-set="iterator" t-value="0"/></t>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="page-break-inside:avoid;">
+                                    <h2>Employee / Issues / Times</h2>
+                                    <p>Shows the reaction time (min, max, avg) and resolution time (min, max, avg) of issues the by each employee.<br/>
+                                    Times in minutes.</p>
+                                    <table class="table table-condensed table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-left">Employee Name</th>
+                                                <th class="text-center">Min Reaction Time</th>
+                                                <th class="text-center">Max Reaction Time</th>
+                                                <th class="text-center">Average Reaction Time</th>
+                                                <th class="text-center">Min Resolution Time</th>
+                                                <th class="text-center">Max Resolution Time</th>
+                                                <th class="text-center">Average Resolution Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-foreach="data['form']['team-issue-average-times']" t-as="employee">
+                                                <td class="text-left"><span t-esc="employee['name']"/></td>
+                                                <td class="text-right"><span t-esc="int(employee['min_reaction_time'])"/></td>
+                                                <td class="text-right"><span t-esc="int(employee['max_reaction_time'])"/></td>
+                                                <td class="text-right"><span t-esc="int(employee['average_reaction_time'])"/></td>
+                                                <td class="text-right"><span t-esc="int(employee['min_resolution_time'])"/></td>
+                                                <td class="text-right"><span t-esc="int(employee['max_resolution_time'])"/></td>
+                                                <td class="text-right"><span t-esc="int(employee['average_resolution_time'])"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="page-break-inside:avoid;">
+                                    <h2>Employee / Issues / SLA successful / SLA non-compliant</h2>
+                                    <p>Shows the SLA compliant and non-compliant rate of issues the by each employee.</p>
+                                    <table class="table table-condensed table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-left">Employee Name</th>
+                                                <th class="text-center">SLA successful</th>
+                                                <th class="text-center">SLA non-compliant</th>
+                                                <th class="text-center">Total Issues</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-foreach="data['form']['team-issue-sla-time']" t-as="employee">
+                                                <t t-set="successful_percent" t-value="int(((float(employee['successful'])/float(employee['total']))*100.0))"/>
+                                                <t t-set="non_compliant_percent" t-value="int(((float(employee['non_compliant'])/float(employee['total']))*100.0))"/>
+                                                <td class="text-left"><span t-esc="employee['name']"/></td>
+                                                <td class="text-right"><span t-esc="employee['successful']"/> (<span t-esc="successful_percent"/> %)</td>
+                                                <td class="text-right"><span t-esc="employee['non_compliant']"/> (<span t-esc="non_compliant_percent"/> %)</td>
+                                                <td class="text-right"><span t-esc="employee['total']"/></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <!-- no lang in 'work.time.analysis' -->
+        <!--
+        <template id="report_work_time_analysis">
+            <t t-call="report.html_container">
+                <t t-foreach="doc_ids" t-as="doc_id">
+                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'work_time_analysis_report.report_work_time_analysis_document')"/>
+                </t>
+            </t>
+        </template>
+        -->
+        
+    </data>
+</openerp>

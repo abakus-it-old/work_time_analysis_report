@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_work_time_analysis" model="ir.ui.view">
+            <field name="name">=Work time analysis</field>
+            <field name="model">work.time.analysis</field>
+            <field name="arch" type="xml">
+                <form string="Work time analysis">
+                    <group string="Users">
+                        <field name="team_id"/>
+                        <field name="user_ids"/>
+                    </group>
+                    <button name="add_team_to_users" string="Add team users to the user list" type="object" class="oe_highlight" />
+                    <group string="Dates">
+                        <field name="date_start"/>
+                        <field name="date_stop"/>
+                    </group>                 
+                    <footer>
+                        <button name="get_report" string="Download Report" type="object" class="oe_highlight" />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_work_time_analysis" model="ir.actions.act_window">
+            <field name="name">Work time analysis</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">work.time.analysis</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_work_time_analysis"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem
+            name="Work time analysis report"
+            parent="hr.menu_hr_reporting"
+            action="action_work_time_analysis"
+            id="work_time_analysis_report.work_time_analysis"/>
+    </data>
+</openerp>
