@@ -177,7 +177,7 @@
                                 <div style="page-break-inside:avoid;">
                                     <h2>Employee / Issues / Times</h2>
                                     <p>Shows the reaction time (min, max, avg) and resolution time (min, max, avg) of issues the by each employee.<br/>
-                                    Times in minutes.</p>
+                                    Times in hours.</p>
                                     <table class="table table-condensed table-bordered">
                                         <thead>
                                             <tr>
@@ -193,12 +193,12 @@
                                         <tbody>
                                             <tr t-foreach="data['form']['team-issue-average-times']" t-as="employee">
                                                 <td class="text-left"><span t-esc="employee['name']"/></td>
-                                                <td class="text-right"><span t-esc="int(employee['min_reaction_time'])"/></td>
-                                                <td class="text-right"><span t-esc="int(employee['max_reaction_time'])"/></td>
-                                                <td class="text-right"><span t-esc="int(employee['average_reaction_time'])"/></td>
-                                                <td class="text-right"><span t-esc="int(employee['min_resolution_time'])"/></td>
-                                                <td class="text-right"><span t-esc="int(employee['max_resolution_time'])"/></td>
-                                                <td class="text-right"><span t-esc="int(employee['average_resolution_time'])"/></td>
+                                                <td class="text-right"><span t-esc="o.decimal_to_hours(employee['min_reaction_time']/60)"/></td>
+                                                <td class="text-right"><span t-esc="o.decimal_to_hours(employee['max_reaction_time']/60)"/></td>
+                                                <td class="text-right"><span t-esc="o.decimal_to_hours(employee['average_reaction_time']/60)"/></td>
+                                                <td class="text-right"><span t-esc="o.decimal_to_hours(employee['min_resolution_time']/60)"/></td>
+                                                <td class="text-right"><span t-esc="o.decimal_to_hours(employee['max_resolution_time']/60)"/></td>
+                                                <td class="text-right"><span t-esc="o.decimal_to_hours(employee['average_resolution_time']/60)"/></td>
                                             </tr>
                                         </tbody>
                                     </table>
