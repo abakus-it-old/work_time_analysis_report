@@ -11,7 +11,7 @@ class work_time_analysis(osv.osv_memory):
     _name = "work.time.analysis"
     
     _columns = {
-        'team_id': fields.many2one('account.analytic.account.team', string='Team'),
+        'team_id': fields.many2one('sale.subscription.team', string='Team'),
         'user_ids': fields.many2many('res.users',string="Users"),
         'date_start': fields.date('Start Date'),
         'date_stop': fields.date('End Date'),
@@ -25,10 +25,10 @@ class work_time_analysis(osv.osv_memory):
     def _get_datas(self, cr, uid, ids, context=None):
         wiz_data = self.browse(cr, uid, ids[0], context=context)
         #contract object
-        account_analytic_account_obj = self.pool.get('account.analytic.account')
+        account_analytic_account_obj = self.pool.get('sale.subscription')
         project_issue_obj = self.pool.get('project.issue')
         #worklog object
-        hr_analytic_timesheet_obj = self.pool.get('hr.analytic.timesheet')
+        hr_analytic_timesheet_obj = self.pool.get('account.analytic.line')
         
         project_task_type_obj = self.pool.get('project.task.type')
         project_task_obj = self.pool.get('project.task')
@@ -250,7 +250,7 @@ class work_time_analysis(osv.osv_memory):
              'model': 'work.time.analysis',
              'form': data,
         }
-        return self.pool['report'].get_action(cr, uid, [], 'work_time_analysis_report.report_work_time_analysis_document', data=datas, context=context)
+        return self.pool['report'].get_action(cr, uid, [], 'work_time_analysis_report.analysis_document', data=datas, context=context)
 
     
     def add_team_to_users(self, cr, uid, ids, context=None):
@@ -297,7 +297,7 @@ class work_time_analysis_print(report_sxw.rml_parse):
         })
 
 class wrapped_work_time_analysis_print(osv.AbstractModel):
-    _name = 'report.work_time_analysis_report.report_work_time_analysis_document'
+    _name = 'report.work_time_analysis_report.analysis_document'
     _inherit = 'report.abstract_report'
-    _template = 'work_time_analysis_report.report_work_time_analysis_document'
+    _template = 'work_time_analysis_report.analysis_document'
     _wrapped_report_class = work_time_analysis_print

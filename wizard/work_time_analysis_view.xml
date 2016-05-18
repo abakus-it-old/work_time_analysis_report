@@ -36,8 +36,9 @@
 
         <menuitem
             name="Work time analysis report"
-            parent="hr.menu_hr_reporting"
+            parent="hr_timesheet.menu_timesheets_reports"
             action="action_work_time_analysis"
-            id="work_time_analysis_report.work_time_analysis"/>
+            id="work_time_analysis_report.work_time_analysis"
+            sequence="20"/>
     </data>
 </openerp>

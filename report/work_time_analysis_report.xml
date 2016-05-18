@@ -6,7 +6,7 @@
             id="action_report_work_time_analysis" 
             model="work.time.analysis" 
             report_type="qweb-pdf"
-            name="work_time_analysis_report.report_work_time_analysis_document" 
+            name="work_time_analysis_report.analysis_document"
             file="work_time_analysis_report" 
         />
         
@@ -19,7 +19,7 @@
             <field name="paperformat_id" ref="paperformat_default_with_landscape"/>
         </record>
 
-        <template id="report_work_time_analysis_document">
+        <template id="analysis_document">
             <t t-name="work_time_analysis_report.report_work_time_analysis_document">
                 <t t-call="report.html_container">
                     <t t-foreach="docs" t-as="o">
