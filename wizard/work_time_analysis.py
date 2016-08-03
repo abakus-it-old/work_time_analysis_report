@@ -11,7 +11,7 @@ class work_time_analysis(osv.osv_memory):
     _name = "work.time.analysis"
     
     _columns = {
-        'team_id': fields.many2one('sale.subscription.team', string='Team'),
+        'team_id': fields.many2one('	account.analytic.account.team', string='Team'),
         'user_ids': fields.many2many('res.users',string="Users"),
         'date_start': fields.date('Start Date'),
         'date_stop': fields.date('End Date'),
