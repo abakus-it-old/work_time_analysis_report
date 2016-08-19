@@ -1,6 +1,6 @@
 ﻿{
     'name': 'Work time analysis report',
-    'version': '1.1',
+    'version': '9.0.1.0',
     'category': 'Human Resources',
     'description': 
     """
