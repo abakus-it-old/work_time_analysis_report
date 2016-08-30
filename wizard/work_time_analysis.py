@@ -106,7 +106,7 @@ class work_time_analysis(osv.osv_memory):
                         create_date = datetime.strptime(issue.create_date, '%Y-%m-%d %H:%M:%S')
                         date_diff_in_minutes = (date_open - create_date).total_seconds()/60                   
                         check = False
-                        for rule in issue.analytic_account_id.contract_type.sla_id.sla_rule_ids:
+                        for rule in issue.analytic_account_id.first_subscription_id.contract_type.sla_id.sla_rule_ids:
                             if check:
                                 break
                             if date_diff_in_minutes < rule.action_time:
