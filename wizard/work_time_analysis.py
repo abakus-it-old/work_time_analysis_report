@@ -217,8 +217,8 @@ class work_time_analysis(osv.osv_memory):
                     planned_hours = task.planned_hours
                     working_hours = 0
                     
-                    for worklog in task.work_ids:
-                        working_hours += worklog.hours
+                    for worklog in task.timesheet_ids:
+                        working_hours += worklog.unit_amount
                     
                     projects_dict[project_id.id]['values'][user_step] += planned_hours
                     projects_dict[project_id.id]['values'][user_step+1] += working_hours
