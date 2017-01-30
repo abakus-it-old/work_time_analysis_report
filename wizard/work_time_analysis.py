@@ -206,7 +206,7 @@ class work_time_analysis(osv.osv_memory):
                 for task in project_task_obj.browse(cr, uid, project_task_ids):
                     project_id = {'id':-1,'name':'No Project',}
                     if task.project_id:
-                        project_id = task.project_id
+                        project_id.id = task.project_id
                     
                     if not projects_dict.has_key(project_id.id):
                         values = []
