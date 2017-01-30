@@ -220,10 +220,10 @@ class work_time_analysis(osv.osv_memory):
                     for worklog in task.timesheet_ids:
                         working_hours += worklog.unit_amount
                     
-                    projects_dict[project_id.id]['values'][user_step] += planned_hours
-                    projects_dict[project_id.id]['values'][user_step+1] += working_hours
-                    projects_dict[project_id.id]['values'][(number_users*2)] += planned_hours
-                    projects_dict[project_id.id]['values'][(number_users*2)+1] += working_hours
+                    projects_dict[project_id['id']]['values'][user_step] += planned_hours
+                    projects_dict[project_id['id']]['values'][user_step+1] += working_hours
+                    projects_dict[project_id['id']]['values'][(number_users*2)] += planned_hours
+                    projects_dict[project_id['id']]['values'][(number_users*2)+1] += working_hours
                     users_total[user_step] += planned_hours
                     users_total[user_step+1] += working_hours
                     users_total[(number_users*2)] += planned_hours
